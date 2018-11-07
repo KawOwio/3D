@@ -177,7 +177,7 @@ void ShaderProgram::draw(VertexArray *vertexArray)
 	glUseProgram(0);
 }
 
-void ShaderProgram::SetUniformVec4(std::string uniform, glm::vec4 value)
+void ShaderProgram::SetUniformMat4(std::string uniform, glm::mat4 value)
 {
 	GLint uniformId = glGetUniformLocation(id, uniform.c_str());
 
@@ -187,8 +187,8 @@ void ShaderProgram::SetUniformVec4(std::string uniform, glm::vec4 value)
 	}
 
 	glUseProgram(id);
-	//glUniformMatrix4fv(uniformId, 1, GL_FALSE, glm::value_ptr(value));
-	glUniform4f(uniformId, value.x, value.y, value.z, value.w);
+	glUniformMatrix4fv(uniformId, 1, GL_FALSE, glm::value_ptr(value));
+	//glUniform4f(uniformId, value.x, value.y, value.z, value.w);
 	glUseProgram(0);
 }
 

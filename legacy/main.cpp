@@ -48,10 +48,7 @@ int main(int argc, char *argv[])
 
   ShaderProgram *shaderProgram = new ShaderProgram("../shaders/simple.vert", "../shaders/simple.frag");
   float angle = 0.0f;
- // shaderProgram->SetUniformVec4("in_Projection", glm::perspective(glm::radians(45.0f),
- //	  (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.f));
 
-  //TEST//
 
   bool quit = false;
 
@@ -70,8 +67,32 @@ int main(int argc, char *argv[])
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-	shaderProgram->draw(shape);
+	//Draw with perspective projection matrix////////////
+	shaderProgram->SetUniformMat4("in_Projection", glm::perspective(glm::radians(45.0f),
+		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.f));
 
+	glm::mat4 model(1.0f);
+	model = glm::translate(model, glm::vec3(0, 0, -2.5f));
+	model = glm::rotate(model, glm::radians(angle), glm::vec3(1, 1, 0));
+
+	shaderProgram->SetUniformMat4("in_Model", model);
+	shaderProgram->draw(shape);
+	/////////////////////////////////////////////////////
+
+	//Draw with orthographic projection matrix///////////
+	shaderProgram->SetUniformMat4("in_Projection", glm::ortho(0.0f, (float)WINDOW_WIDTH,
+		0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f));
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(100, WINDOW_HEIGHT - 100, 0));
+	model = glm::scale(model, glm::vec3(100, 100, 1));
+	model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 0, 1));
+
+	shaderProgram->SetUniformMat4("in_Model", model);
+	shaderProgram->draw(shape);
+	/////////////////////////////////////////////////////
+
+	angle += 1.0f;
     SDL_GL_SwapWindow(window);
   }
 
