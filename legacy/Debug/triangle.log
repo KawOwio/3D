@@ -1,0 +1,8 @@
+﻿  ShaderProgram.cpp
+  main.cpp
+  Generating Code...
+  triangle.vcxproj -> C:\VisualStudioProjects\3D_Programming\legacy\Debug\triangle.exe
+  ..\contrib\msvc-windows-x86\SDL2\bin\SDL2.dll
+          1 file(s) copied.
+  ..\contrib\msvc-windows-x86\glew\bin\glew32.dll
+          1 file(s) copied.
