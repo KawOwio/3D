@@ -51,6 +51,8 @@ int main(int argc, char *argv[])
  // shaderProgram->SetUniformVec4("in_Projection", glm::perspective(glm::radians(45.0f),
  //	  (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.f));
 
+  //TEST//
+
   bool quit = false;
 
   while(!quit)
