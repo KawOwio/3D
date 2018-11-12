@@ -67,7 +67,7 @@ ShaderProgram::ShaderProgram()
 	glAttachShader(id, fragmentShaderId);
 
 	glBindAttribLocation(id, 0, "in_Position");
-	glBindAttribLocation(id, 1, "in_Color");
+	glBindAttribLocation(id, 1, "in_TexCoord");
 	//Perform the link and check for failure
 	glLinkProgram(id);
 	GLint suvvess = 0;
@@ -150,7 +150,7 @@ ShaderProgram::ShaderProgram(std::string vert, std::string frag)
 	glAttachShader(id, fragmentShaderId);
 
 	glBindAttribLocation(id, 0, "in_Position");
-	glBindAttribLocation(id, 1, "in_Color");
+	glBindAttribLocation(id, 1, "in_TexCoord");
 	//Perform the link and check for failure
 	glLinkProgram(id);
 	GLint suvvess = 0;
@@ -202,7 +202,7 @@ void ShaderProgram::SetUniformFloat(std::string uniform, float value)
 	}
 
 	glUseProgram(id);
-	glUniform1f(uniformId, value);
+	glUniform1i(uniformId, value);
 	glUseProgram(0);
 }
 

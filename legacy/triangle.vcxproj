@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\contrib\stb_image\stb_image.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="VertexArray.cpp" />
@@ -87,7 +88,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\contrib\msvc-windows-x86\SDL2\include;..\contrib\msvc-windows-x86\glew\include;C:\VisualStudioProjects\3D_Programming\contrib\msvc-windows-x86</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\contrib\msvc-windows-x86\SDL2\include;..\contrib\msvc-windows-x86\glew\include;..\contrib\msvc-windows-x86;..\contrib\stb_image</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SDL_MAIN_HANDLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
