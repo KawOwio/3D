@@ -1,22 +1,25 @@
-#pragma once
-
 #include <GL/glew.h>
-#include <vector> 
+#include <glm/glm.hpp>
+
+#include <vector>
+#include <string>
 
 class VertexBuffer;
 
 class VertexArray
 {
-private:
-	GLuint id;
-	std::vector<VertexBuffer*> buffers;
-	bool dirty;
+  GLuint id;
+  bool dirty;
+  std::vector<VertexBuffer *> buffers;
+
+  void splitStringWhitespace(std::string& input, std::vector<std::string>& output);
+  void splitString(std::string& input, char splitter, std::vector<std::string>& output);
 
 public:
-	VertexArray();
-	
-	void SetBuffer(std::string attribute, VertexBuffer* buffer);
+  VertexArray();
+  VertexArray(std::string path);
+  void setBuffer(std::string attribute, VertexBuffer *buffer);
+  int getVertexCount();
+  GLuint getId();
 
-	int GetVertexCount();
-	GLuint GetId();
 };

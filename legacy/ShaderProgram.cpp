@@ -1,217 +1,201 @@
 #include "ShaderProgram.h"
+#include "VertexArray.h"
+#include "Texture.h"
 
-ShaderProgram::ShaderProgram()
-{
-	std::string vertShader;
-	std::string fragShader;
+#include <glm/ext.hpp>
 
-	std::ifstream file("../shaders/simple.vert");
-
-	if (!file.is_open())
-	{
-		throw std::exception();
-	}
-	else
-	{
-		while (!file.eof())
-		{
-			std::string line;
-			std::getline(file, line);
-			vertShader += line + "\n";
-		}
-	}
-	file.close();
-
-	file.open("../shaders/simple.frag");
-
-	if (!file.is_open())
-	{
-		throw std::exception();
-	}
-	else
-	{
-		while (!file.eof())
-		{
-			std::string line;
-			std::getline(file, line);
-			fragShader += line + "\n";
-		}
-	}
-	file.close();
-
-	const char *vertex = vertShader.c_str();
-	const char *fragment = fragShader.c_str();
-
-	GLuint vertexShaderId = glCreateShader(glCreateShader(GL_VERTEX_SHADER));
-	glShaderSource(vertexShaderId, 1, &vertex, NULL);
-	glCompileShader(vertexShaderId);
-	GLint success = 0;
-	glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		throw std::exception();
-	}
-
-	GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShaderId, 1, &fragment, NULL);
-	glCompileShader(fragmentShaderId);
-	success = 0;
-	glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		throw std::exception();
-	}
-
-	id = glCreateProgram();
-	glAttachShader(id, vertexShaderId);
-	glAttachShader(id, fragmentShaderId);
-
-	glBindAttribLocation(id, 0, "in_Position");
-	glBindAttribLocation(id, 1, "in_TexCoord");
-	//Perform the link and check for failure
-	glLinkProgram(id);
-	GLint suvvess = 0;
-	glGetProgramiv(id, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		throw std::exception();
-	}
-
-	glDetachShader(id, vertexShaderId);
-	glDeleteShader(vertexShaderId);
-	glDetachShader(id, fragmentShaderId);
-	glDeleteShader(fragmentShaderId);
-}
+#include <fstream>
+#include <iostream>
 
 ShaderProgram::ShaderProgram(std::string vert, std::string frag)
 {
-	std::string vertShader;
-	std::string fragShader;
+  std::ifstream file(vert.c_str());
+  std::string vertSrc;
 
-	std::ifstream file(vert);
+  if(!file.is_open())
+  {
+    throw std::exception();
+  }
 
-	if (!file.is_open())
-	{
-		throw std::exception();
-	}
-	else
-	{
-		while (!file.eof())
-		{
-			std::string line;
-			std::getline(file, line);
-			vertShader += line + "\n";
-		}
-	}
-	file.close();
+  while(!file.eof())
+  {
+    std::string line;
+    std::getline(file, line);
+    vertSrc += line + "\n";
+  }
 
-	file.open(frag);
+  file.close();
+  file.open(frag.c_str());
+  std::string fragSrc;
 
-	if (!file.is_open())
-	{
-		throw std::exception();
-	}
-	else
-	{
-		while (!file.eof())
-		{
-			std::string line;
-			std::getline(file, line);
-			fragShader += line + "\n";
-		}
-	}
-	file.close();
+  if(!file.is_open())
+  {
+    throw std::exception();
+  }
 
-	const char *vertex = vertShader.c_str();
-	const char *fragment = fragShader.c_str();
+  while(!file.eof())
+  {
+    std::string line;
+    std::getline(file, line);
+    fragSrc += line + "\n";
+  }
 
-	GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShaderId, 1, &vertex, NULL);
-	glCompileShader(vertexShaderId);
-	GLint success = 0;
-	glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		throw std::exception();
-	}
+  const GLchar *vs = vertSrc.c_str();
+  GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(vertexShaderId, 1, &vs, NULL);
+  glCompileShader(vertexShaderId);
+  GLint success = 0;
+  glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &success);
 
-	GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShaderId, 1, &fragment, NULL);
-	glCompileShader(fragmentShaderId);
-	success = 0;
-	glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		throw std::exception();
-	}
+  if(!success)
+  {
+    throw std::exception();
+  }
 
-	id = glCreateProgram();
-	glAttachShader(id, vertexShaderId);
-	glAttachShader(id, fragmentShaderId);
+  const GLchar *fs = fragSrc.c_str();
+  GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+  glShaderSource(fragmentShaderId, 1, &fs, NULL);
+  glCompileShader(fragmentShaderId);
+  glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &success);
 
-	glBindAttribLocation(id, 0, "in_Position");
-	glBindAttribLocation(id, 1, "in_TexCoord");
-	//Perform the link and check for failure
-	glLinkProgram(id);
-	GLint suvvess = 0;
-	glGetProgramiv(id, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		throw std::exception();
-	}
+  if(!success)
+  {
+    throw std::exception();
+  }
 
-	glDetachShader(id, vertexShaderId);
-	glDeleteShader(vertexShaderId);
-	glDetachShader(id, fragmentShaderId);
-	glDeleteShader(fragmentShaderId);
+  id = glCreateProgram();
+  glAttachShader(id, vertexShaderId);
+  glAttachShader(id, fragmentShaderId);
+  glBindAttribLocation(id, 0, "in_Position");
+  glBindAttribLocation(id, 1, "in_Color");
+  glBindAttribLocation(id, 2, "in_TexCoord");
+  glBindAttribLocation(id, 3, "in_Normal");
+
+  if(glGetError() != GL_NO_ERROR)
+  {
+    throw std::exception();
+  }
+
+  glLinkProgram(id);
+  glGetProgramiv(id, GL_LINK_STATUS, &success);
+
+  if(!success)
+  {
+    throw std::exception();
+  }
+
+  glDetachShader(id, vertexShaderId);
+  glDeleteShader(vertexShaderId);
+  glDetachShader(id, fragmentShaderId);
+  glDeleteShader(fragmentShaderId);
 }
 
 void ShaderProgram::draw(VertexArray *vertexArray)
 {
-	glUseProgram(id);
-	glBindVertexArray(vertexArray->GetId());
+  glUseProgram(id);
+  glBindVertexArray(vertexArray->getId());
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+  for(size_t i = 0; i < samplers.size(); i++)
+  {
+    glActiveTexture(GL_TEXTURE0 + i);
 
-	glBindVertexArray(0);
-	glUseProgram(0);
+    if(samplers.at(i).texture)
+    {
+      glBindTexture(GL_TEXTURE_2D, samplers.at(i).texture->getId());
+    }
+    else
+    {
+      glBindTexture(GL_TEXTURE_2D, 0);
+    }
+  }
+
+  glDrawArrays(GL_TRIANGLES, 0, vertexArray->getVertexCount());
+
+  for(size_t i = 0; i < samplers.size(); i++)
+  {
+    glActiveTexture(GL_TEXTURE0 + i);
+    glBindTexture(GL_TEXTURE_2D, 0);
+  }
+
+  glBindVertexArray(0);
+  glUseProgram(0);
 }
 
-void ShaderProgram::SetUniformMat4(std::string uniform, glm::mat4 value)
+void ShaderProgram::setUniform(std::string uniform, glm::vec4 value)
 {
-	GLint uniformId = glGetUniformLocation(id, uniform.c_str());
+  GLint uniformId = glGetUniformLocation(id, uniform.c_str());
 
-	if (uniformId == -1)
-	{
-		throw std::exception();
-	}
+  if(uniformId == -1)
+  {
+    throw std::exception();
+  }
 
-	glUseProgram(id);
-	glUniformMatrix4fv(uniformId, 1, GL_FALSE, glm::value_ptr(value));
-	//glUniform4f(uniformId, value.x, value.y, value.z, value.w);
-	glUseProgram(0);
+  glUseProgram(id);
+  glUniform4f(uniformId, value.x, value.y, value.z, value.w);
+  glUseProgram(0);
 }
 
-void ShaderProgram::SetUniformFloat(std::string uniform, float value)
+void ShaderProgram::setUniform(std::string uniform, float value)
 {
-	GLint uniformId = glGetUniformLocation(id, uniform.c_str());
+  GLint uniformId = glGetUniformLocation(id, uniform.c_str());
 
-	if (uniformId == -1)
-	{
-		throw std::exception();
-	}
+  if(uniformId == -1)
+  {
+    throw std::exception();
+  }
 
-	glUseProgram(id);
-	glUniform1i(uniformId, value);
-	glUseProgram(0);
+  glUseProgram(id);
+  glUniform1f(uniformId, value);
+  glUseProgram(0);
+}
+
+void ShaderProgram::setUniform(std::string uniform, glm::mat4 value)
+{
+  GLint uniformId = glGetUniformLocation(id, uniform.c_str());
+
+  if(uniformId == -1)
+  {
+    throw std::exception();
+  }
+
+  glUseProgram(id);
+  glUniformMatrix4fv(uniformId, 1, GL_FALSE, glm::value_ptr(value));
+  glUseProgram(0);
+}
+
+void ShaderProgram::setUniform(std::string uniform, Texture *texture)
+{
+  GLint uniformId = glGetUniformLocation(id, uniform.c_str());
+
+  if(uniformId == -1)
+  {
+    throw std::exception();
+  }
+
+  for(size_t i = 0; i < samplers.size(); i++)
+  {
+    if(samplers.at(i).id == uniformId)
+    {
+      samplers.at(i).texture = texture;
+
+      glUseProgram(id);
+      glUniform1i(uniformId, i);
+      glUseProgram(0);
+      return;
+    }
+  }
+
+  Sampler s;
+  s.id = uniformId;
+  s.texture = texture;
+  samplers.push_back(s);
+
+  glUseProgram(id);
+  glUniform1i(uniformId, samplers.size() - 1);
+  glUseProgram(0);
 }
 
 GLuint ShaderProgram::getId()
 {
-	if (id == NULL)
-	{
-		throw std::exception();
-	}
-
-	return id;
+  return id;
 }

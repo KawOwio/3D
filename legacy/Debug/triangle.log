@@ -1,10 +1,4 @@
-﻿  ShaderProgram.cpp
-c:\visualstudioprojects\3d\legacy\shaderprogram.cpp(205): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
-  VertexArray.cpp
-c:\visualstudioprojects\3d\legacy\vertexarray.cpp(51): warning C4018: '<': signed/unsigned mismatch
-  main.cpp
-  Generating Code...
-  LINK : C:\VisualStudioProjects\3D\legacy\Debug\triangle.exe not found or not built by the last incremental link; performing full link
+﻿  main.cpp
   triangle.vcxproj -> C:\VisualStudioProjects\3D\legacy\Debug\triangle.exe
   ..\contrib\msvc-windows-x86\SDL2\bin\SDL2.dll
           1 file(s) copied.

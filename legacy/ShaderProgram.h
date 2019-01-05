@@ -1,28 +1,30 @@
-#pragma once
-
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <fstream>
-#include <string>
 
-#include "VertexArray.h"
+#include <string>
+#include <vector>
 
 class VertexArray;
+class Texture;
+
+struct Sampler
+{
+  GLint id;
+  Texture *texture;
+};
 
 class ShaderProgram
 {
-private:
-	GLuint id;
+  GLuint id;
+  std::vector<Sampler> samplers;
 
 public:
-	ShaderProgram();
-	ShaderProgram(std::string vert, std::string frag);
+  ShaderProgram(std::string vert, std::string frag);
+  void draw(VertexArray *vertexArray);
+  void setUniform(std::string uniform, glm::vec4 value);
+  void setUniform(std::string uniform, float value);
+  void setUniform(std::string uniform, glm::mat4 value);
+  void setUniform(std::string uniform, Texture *texture);
+  GLuint getId();
 
-	void draw(VertexArray *vertexArray);
-
-	void SetUniformMat4(std::string uniform, glm::mat4 value);
-	void SetUniformFloat(std::string uniform, float value);
-
-	GLuint getId();
 };
