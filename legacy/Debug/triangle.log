@@ -1,9 +1,12 @@
-﻿  Player.cpp
-  main.cpp
-c:\visualstudioprojects\3d\legacy\main.cpp(60): warning C4244: 'initializing': conversion from 'Uint32' to 'float', possible loss of data
-c:\visualstudioprojects\3d\legacy\main.cpp(142): warning C4244: 'initializing': conversion from 'Uint32' to 'float', possible loss of data
-c:\visualstudioprojects\3d\legacy\main.cpp(152): warning C4244: 'argument': conversion from 'float' to 'Uint32', possible loss of data
-  Generating Code...
+﻿  Maze.cpp
+c:\visualstudioprojects\3d\legacy\maze.cpp(101): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+c:\visualstudioprojects\3d\legacy\maze.cpp(101): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\visualstudioprojects\3d\legacy\maze.cpp(102): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+c:\visualstudioprojects\3d\legacy\maze.cpp(102): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\visualstudioprojects\3d\legacy\maze.cpp(104): warning C4101: 'bottom': unreferenced local variable
+c:\visualstudioprojects\3d\legacy\maze.cpp(104): warning C4101: 'left': unreferenced local variable
+c:\visualstudioprojects\3d\legacy\maze.cpp(104): warning C4101: 'top': unreferenced local variable
+c:\visualstudioprojects\3d\legacy\maze.cpp(104): warning C4101: 'right': unreferenced local variable
   triangle.vcxproj -> C:\VisualStudioProjects\3D\legacy\Debug\triangle.exe
   ..\contrib\msvc-windows-x86\SDL2\bin\SDL2.dll
           1 file(s) copied.

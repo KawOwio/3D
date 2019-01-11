@@ -1,19 +1,15 @@
 #include "VertexBuffer.h"
-#include "VertexArray.h"
-#include "ShaderProgram.h"
-#include "Texture.h"
 #include "Maze.h"
 #include "Player.h"
 
 #include <GL/glew.h>
-#include <glm/ext.hpp>
 
 #include <exception>
 
 int windowWidth = 800;
 int windowHeight = 600;
 
-float playerSpeed = 5.0f;
+float playerSpeed = 0.5f;
 int FPS = 60;
 int frameStartMs = 0;
 
@@ -46,27 +42,46 @@ int main(int argc, char *argv[])
   VertexArray *cube = new VertexArray("../cube.obj");
   Texture *cubeTexture = new Texture("../cube2.png");
 
+  //std::vector <VertexArray> *cube = new VertexArray("..cube.obj");
+
   ShaderProgram *shader = new ShaderProgram("../shaders/simple.vert", "../shaders/simple.frag");
 
   Maze mazeInit;
   Player myPlayer;
-  mazeInit.MazeInit("../21x21.txt", glm::vec2(800, 600));
+
+  //Initialisation of the maze
+  mazeInit.mazeInit("../maze.txt", glm::vec2(800, 600));
+
+  //Getting and setting the start position
+  glm::vec3 start = mazeInit.getStartPosition();
+  start.y = 4.0f;
+  myPlayer.setPosition(start);
 
   bool quit = false;
-  bool init = true;
+  bool collision = false;
 
   glm::vec2 angle = glm::vec2(0.0f, 0.0f);
-  float speed = playerSpeed / FPS;
+  float speed = playerSpeed;
   float lastTime = SDL_GetTicks();
-
-  float test = 0.0f;
+  
+  glm::vec3 cameraPos = myPlayer.getPosition();
+  glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+  glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
   glm::vec2 cameraRotation;
-  
+;
+  glm::vec3 fwd = glm::vec3(0.0f, 0.0f, -1.0f);
+  glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
+
+  float yaw = 0.0f;
+  float pitch = 0.0f;
 
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
   SDL_SetRelativeMouseMode(SDL_TRUE);
+
+
+
   while(!quit)
   {
 	frameStartMs = SDL_GetTicks();
@@ -78,17 +93,12 @@ int main(int argc, char *argv[])
       {
         quit = true;
       }
-	  myPlayer.keyboardInput(event, speed);
-	  
+	  myPlayer.keyboardInput(event, speed, fwd, cameraUp);
     }
 	cameraRotation = myPlayer.mouseInput(event);
-	angle += cameraRotation;
+	//std::cout << "Angle: " << angle.x << std::endl;
 
-	if (init == true)
-	{
-		//Make maze here
-		init = false;
-	}
+	collision = true;
 
     SDL_GetWindowSize(window, &windowWidth, &windowHeight);
     glViewport(0, 0, windowWidth, windowHeight);
@@ -99,52 +109,34 @@ int main(int argc, char *argv[])
     shader->setUniform("in_Projection", glm::perspective(glm::radians(60.0f),
      (float)windowWidth / (float)windowHeight, 0.1f, 100.f));
 
+	//Working out forward vector
+	glm::mat4 model(1.0f);
+	model = glm::rotate(model, glm::radians(myPlayer.getYaw() * 0.1f), glm::vec3(0, 1, 0));
+	fwd = model * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
+
+	//Working out right vector
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(myPlayer.getYaw() * 0.1f), glm::vec3(0, 1, 0));
+	right = model * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
     // Create a "camera"
-    glm::mat4 model(1.0f); 
-	model = glm::rotate(model, glm::radians(angle.x / 10.0f), glm::vec3(0, 1, 0));
-	//model = glm::rotate(model, glm::radians(angle.y / 10.0f), glm::vec3(1, 0, 0));
+    model = glm::mat4(1.0f); 
 	model = glm::translate(model, myPlayer.getPosition());
-
-	glm::vec3 fwd = model * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	fwd = glm::normalize(fwd);
-	myPlayer.setPosition(fwd);
-
-	//std::cout << "XYZ: " << fwd.x << " " << fwd.y << " " << fwd.z << std::endl;
+	model = glm::rotate(model, glm::radians(myPlayer.getYaw() * 0.1f), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, glm::radians(myPlayer.getPitch() * 0.1f), glm::vec3(1, 0, 0));
     shader->setUniform("in_View", glm::inverse(model));
 
-    //Draw the mansion
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(2.0f, -2.0f, -16.0f));
-    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 1, 0));
-    shader->setUniform("in_Model", model);
-    shader->setUniform("in_Texture", hallTexture);
-    shader->draw(hallShape);
-
-	//Draw the character
-	/*model = glm::mat4(1.0f);
-	model = glm::translate(model, myPlayer.getPosition());
-	model = glm::rotate(model, glm::radians(angle.x), glm::vec3(0, 1, 0));
-	model = glm::scale(model, glm::vec3(3.5f, 3.5f, 3.5f));
-	shader->setUniform("in_Model", model);
-	shader->setUniform("in_Texture", texture);
-	shader->draw(shape);*/
-
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, -1.3f, -20.0f));
-	model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));
-	shader->setUniform("in_Model", model);
-	shader->setUniform("in_Texture", cubeTexture);
-	shader->draw(cube);
+	//Draw the maze	
+	mazeInit.draw(shader, cube, cubeTexture);
 	
-	myPlayer.move(fwd);
+	collision = mazeInit.collisionCheck(myPlayer.getPosition());
+	myPlayer.move(fwd, right, collision);
     SDL_GL_SwapWindow(window);
 
 	float time = SDL_GetTicks();
 	float diff = time - lastTime;
 	float deltaTime = diff / 1000.0f;
 	lastTime = time;
-
-	test += 1.0f;
 
 	float idealTime = 1.0f / 60.0f;
 	if (idealTime > deltaTime)
