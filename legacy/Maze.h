@@ -16,6 +16,8 @@
 struct Grid
 {
 	glm::vec3 pos;
+	glm::vec3 cubeMin;
+	glm::vec3 cubeMax;
 	int space;
 	bool open;
 };

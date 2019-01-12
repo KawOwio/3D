@@ -2,9 +2,7 @@
 
 Player::Player()
 {
-	//m_position = glm::vec3(0.0f, -1.3f, -10.0f);
-	m_position = glm::vec3(0.0f, 4.0f, 1.0f);
-	m_velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	bool w = false;
 	bool a = false;
@@ -24,14 +22,6 @@ bool Player::keyboardInput(SDL_Event event, float speed, glm::vec3 front, glm::v
 	{
 		switch (event.key.keysym.sym)
 		{
-		//case SDLK_w: m_velocity.z -= speed; break;
-		//case SDLK_s: m_velocity.z += speed; break;
-		//case SDLK_a: m_velocity.x -= speed; break;
-		//case SDLK_d: m_velocity.x += speed; break;
-		//case SDLK_w: m_velocity += speed; break;
-		//case SDLK_s: m_velocity -= speed; break;
-		//case SDLK_a: m_velocity -= speed; break;
-		//case SDLK_d: m_velocity += speed; break;
 		case SDLK_w: w = true; break;
 		case SDLK_s: s = true; break;
 		case SDLK_a: a = true; break;
@@ -42,10 +32,6 @@ bool Player::keyboardInput(SDL_Event event, float speed, glm::vec3 front, glm::v
 	{
 		switch (event.key.keysym.sym)
 		{
-		//case SDLK_w: m_velocity = glm::vec3(0.0f, 0.0f, 0.0f); break;
-		//case SDLK_s: m_velocity = glm::vec3(0.0f, 0.0f, 0.0f); break;
-		//case SDLK_a: m_velocity = glm::vec3(0.0f, 0.0f, 0.0f); break;
-		//case SDLK_d: m_velocity = glm::vec3(0.0f, 0.0f, 0.0f); break;
 		case SDLK_w: w = false; break;
 		case SDLK_s: s = false; break;
 		case SDLK_a: a = false; break;
@@ -71,7 +57,7 @@ void Player::UpdateView(glm::vec3 fwd)
 	viewMatrix = rotate * translate;
 }
 
-glm::vec2 Player::mouseInput(SDL_Event event)
+void Player::mouseInput(SDL_Event event)
 {
 	if (event.type == SDL_MOUSEMOTION)
 	{
@@ -84,7 +70,7 @@ glm::vec2 Player::mouseInput(SDL_Event event)
 	yaw += deltaMousePos.x;
 	pitch += deltaMousePos.y;
 
-	float angle = 45.0f * 10.0f;
+	float angle = 90.0f * 10.0f;
 
 	if (pitch > angle)
 	{
@@ -96,50 +82,54 @@ glm::vec2 Player::mouseInput(SDL_Event event)
 	}
 
 	m_oldMousePos = m_mousePos;
-	std::cout << deltaMousePos.x << " <X Y> " << deltaMousePos.y << std::endl;
-	return deltaMousePos;
 }
 
 void Player::move(glm::vec3 fwd, glm::vec3 right, bool collision)
 {
 	playerSpeed = 0.2f;
-	
+
+	std::cout << "cur pos: " << position.x << ", " << position.z << std::endl;
+	std::cout << "old pos: " << oldPosition.x << ", " << oldPosition.z << std::endl;
+
 	if (!collision)
 	{
 		if (w == true)
 		{
-			m_position += playerSpeed * fwd;
+			oldPosition = position;
+			position += playerSpeed * fwd;
+		}
+		if (s == true)
+		{
+			oldPosition = position;
+			position -= playerSpeed * fwd;
+			
+		}
+		if (a == true)
+		{
+			oldPosition = position;
+			position -= playerSpeed * right;
+			
+		}
+		if (d == true)
+		{
+			oldPosition = position;
+			position += playerSpeed * right;
+			
 		}
 	}
 	else
 	{
-		if (w == true)
-		{
-			m_position -= playerSpeed * fwd;
-		}
+		position = oldPosition;
 	}
 
-	if (s == true)
-	{
-		m_position -= playerSpeed * fwd;
-	}
-	if (a == true)
-	{
-		m_position -= playerSpeed * right;
-	}
-	if (d == true)
-	{
-		m_position += playerSpeed * right;
-	}
-
-	std::cout << "X: " << m_position.x <<
-				"\nY: " << m_position.y <<
-				"\nZ: " << m_position.z << std::endl;
+	std::cout << "X: " << position.x <<
+				"\nY: " << position.y <<
+				"\nZ: " << position.z << std::endl;
 }
 
 glm::vec3 Player::getPosition()
 {
-	return m_position;
+	return position;
 }
 
 glm::mat4 Player::getViewMatrix()
@@ -159,5 +149,5 @@ float Player::getPitch()
 
 void Player::setPosition(glm::vec3 _pos)
 {
-	m_position = _pos;
+	position = _pos;
 }

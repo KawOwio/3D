@@ -5,9 +5,9 @@
 class Player
 {
 private:
-	glm::vec3 m_position;
-	glm::vec3 m_velocity;
-	glm::vec3 m_rotation;
+	glm::vec3 position;
+	glm::vec3 oldPosition;
+	glm::vec3 velocity;
 
 	float yaw;
 	float pitch;
@@ -29,7 +29,7 @@ public:
 
 	bool keyboardInput(SDL_Event event, float speed, glm::vec3 front, glm::vec3 up);
 	void UpdateView(glm::vec3 fwd);
-	glm::vec2 mouseInput(SDL_Event);
+	void mouseInput(SDL_Event);
 	void move(glm::vec3 fwd, glm::vec3 right, bool collision);
 
 	glm::vec3 getPosition();

@@ -6,8 +6,8 @@
 
 #include <exception>
 
-int windowWidth = 800;
-int windowHeight = 600;
+int windowWidth = 1280;
+int windowHeight = 720;
 
 float playerSpeed = 0.5f;
 int FPS = 60;
@@ -35,22 +35,16 @@ int main(int argc, char *argv[])
     throw std::exception();
   }
 
-  VertexArray *hallShape = new VertexArray("../re_hall_baked.obj");
-  Texture *hallTexture = new Texture("../re_hall_diffuse.png");
-  VertexArray *shape = new VertexArray("../lumberJack.obj");
-  Texture *texture = new Texture("../lumberJack_diffuse.png");
-  VertexArray *cube = new VertexArray("../cube.obj");
-  Texture *cubeTexture = new Texture("../cube2.png");
+  VertexArray *cube = new VertexArray("../assets/models/cube.obj");
+  Texture *cubeTexture = new Texture("../assets/textures/cube.png");
 
-  //std::vector <VertexArray> *cube = new VertexArray("..cube.obj");
-
-  ShaderProgram *shader = new ShaderProgram("../shaders/simple.vert", "../shaders/simple.frag");
+  ShaderProgram *shader = new ShaderProgram("../assets/shaders/simple.vert", "../assets/shaders/simple.frag");
 
   Maze mazeInit;
   Player myPlayer;
 
   //Initialisation of the maze
-  mazeInit.mazeInit("../maze.txt", glm::vec2(800, 600));
+  mazeInit.mazeInit("../assets/mazes/maze.txt", glm::vec2(800, 600));
 
   //Getting and setting the start position
   glm::vec3 start = mazeInit.getStartPosition();
@@ -95,8 +89,7 @@ int main(int argc, char *argv[])
       }
 	  myPlayer.keyboardInput(event, speed, fwd, cameraUp);
     }
-	cameraRotation = myPlayer.mouseInput(event);
-	//std::cout << "Angle: " << angle.x << std::endl;
+	myPlayer.mouseInput(event);
 
 	collision = true;
 
@@ -137,6 +130,7 @@ int main(int argc, char *argv[])
 	float diff = time - lastTime;
 	float deltaTime = diff / 1000.0f;
 	lastTime = time;
+	system("cls");
 
 	float idealTime = 1.0f / 60.0f;
 	if (idealTime > deltaTime)
