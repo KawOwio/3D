@@ -26,7 +26,7 @@ public:
 	Player();
 	~Player();
 
-	bool keyboardInput(SDL_Event event, float speed, glm::vec3 front);
+	bool keyboardInput(SDL_Event event);
 	void mouseInput(SDL_Event);
 	void move(glm::vec3 fwd, glm::vec3 right, bool collision);
 

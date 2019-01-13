@@ -14,7 +14,6 @@
 int windowWidth = 1280;
 int windowHeight = 720;
 
-float playerSpeed = 0.5f;
 int FPS = 60;
 int frameStartMs = 0;
 
@@ -92,7 +91,7 @@ int main(int argc, char *argv[])
         quit = true;
 		break;
       }
-	  myPlayer.keyboardInput(event, playerSpeed, fwd);
+	  myPlayer.keyboardInput(event);
     }
 	myPlayer.mouseInput(event);
 

@@ -14,7 +14,7 @@ Player::~Player()
 
 }
 
-bool Player::keyboardInput(SDL_Event event, float speed, glm::vec3 front)
+bool Player::keyboardInput(SDL_Event event)
 {
 
 	if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
