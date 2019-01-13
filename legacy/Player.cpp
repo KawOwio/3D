@@ -3,7 +3,7 @@
 Player::Player()
 {
 	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-
+	pitch = 40.0f;
 	bool w = false;
 	bool a = false;
 	bool s = false;
@@ -88,9 +88,6 @@ void Player::move(glm::vec3 fwd, glm::vec3 right, bool collision)
 {
 	playerSpeed = 0.2f;
 
-	std::cout << "cur pos: " << position.x << ", " << position.z << std::endl;
-	std::cout << "old pos: " << oldPosition.x << ", " << oldPosition.z << std::endl;
-
 	if (!collision)
 	{
 		if (w == true)
@@ -101,8 +98,7 @@ void Player::move(glm::vec3 fwd, glm::vec3 right, bool collision)
 		if (s == true)
 		{
 			oldPosition = position;
-			position -= playerSpeed * fwd;
-			
+			position -= playerSpeed * fwd;			
 		}
 		if (a == true)
 		{

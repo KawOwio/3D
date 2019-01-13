@@ -19,7 +19,6 @@ struct Grid
 	glm::vec3 cubeMin;
 	glm::vec3 cubeMax;
 	int space;
-	bool open;
 };
 
 class Maze
@@ -29,26 +28,27 @@ private:
 	//int rows, columns = size;
 	const float dimensions = 7.0f;
 
+	float angle;
+
 	std::string mazeInput;
 	std::string mazeTemp;
 
 	glm::vec3 startPos;
 
 	Grid maze[21][21];
-	Grid map[21][21];
+
+	bool keyPick;
 
 public:
 	Maze();
 	~Maze();
 
 	void mazeInit(std::string _mazeFile, glm::vec2 _windowSize);
-
-	//WIP
-	void draw(ShaderProgram *shader, VertexArray *cube, Texture *wallTexture);
+	void draw(ShaderProgram *shader, VertexArray *cube, Texture *wallTexture, 
+		VertexArray *ladder, Texture *ladderTexture,
+		VertexArray *key, Texture *keyTexture,
+		VertexArray *sign, Texture *signTexture);
 	bool collisionCheck(glm::vec3 _pos);
+	bool getKeyPick();
 	glm::vec3 getStartPosition();
-
-	//??
-	int getSpaceStatus(int _rows, int _columns);
-	glm::vec3 getSpacePosition(int _rows, int _columns);
 };

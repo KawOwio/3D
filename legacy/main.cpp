@@ -37,6 +37,12 @@ int main(int argc, char *argv[])
 
   VertexArray *cube = new VertexArray("../assets/models/cube.obj");
   Texture *cubeTexture = new Texture("../assets/textures/cube.png");
+  VertexArray *ladder = new VertexArray("../assets/models/ladder.obj");
+  Texture *ladderTexture = new Texture("../assets/textures/ladder.jpg");
+  VertexArray *key = new VertexArray("../assets/models/key.obj");
+  Texture *keyTexture = new Texture("../assets/textures/key.bmp");
+  VertexArray *sign = new VertexArray("../assets/models/sign.obj");
+  Texture *signTexture = new Texture("../assets/textures/sign.png");
 
   ShaderProgram *shader = new ShaderProgram("../assets/shaders/simple.vert", "../assets/shaders/simple.frag");
 
@@ -100,7 +106,7 @@ int main(int argc, char *argv[])
 
 	//Draw with perspective projection matrix
     shader->setUniform("in_Projection", glm::perspective(glm::radians(60.0f),
-     (float)windowWidth / (float)windowHeight, 0.1f, 100.f));
+     (float)windowWidth / (float)windowHeight, 0.1f, 200.f));
 
 	//Working out forward vector
 	glm::mat4 model(1.0f);
@@ -120,7 +126,7 @@ int main(int argc, char *argv[])
     shader->setUniform("in_View", glm::inverse(model));
 
 	//Draw the maze	
-	mazeInit.draw(shader, cube, cubeTexture);
+	mazeInit.draw(shader, cube, cubeTexture, ladder, ladderTexture, key, keyTexture, sign, signTexture);
 	
 	collision = mazeInit.collisionCheck(myPlayer.getPosition());
 	myPlayer.move(fwd, right, collision);
@@ -131,6 +137,12 @@ int main(int argc, char *argv[])
 	float deltaTime = diff / 1000.0f;
 	lastTime = time;
 	system("cls");
+
+	bool exit = mazeInit.getKeyPick();
+	if (exit == true)
+	{
+		break;
+	}
 
 	float idealTime = 1.0f / 60.0f;
 	if (idealTime > deltaTime)

@@ -2,11 +2,13 @@
 #include <glm/ext.hpp>
 #include <SDL2/SDL.h>
 #include <iostream>
+
 class Player
 {
 private:
 	glm::vec3 position;
 	glm::vec3 oldPosition;
+	glm::vec3 tempPosition;
 	glm::vec3 velocity;
 
 	float yaw;

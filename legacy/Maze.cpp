@@ -2,7 +2,8 @@
 
 Maze::Maze()
 {
-
+	angle = 0.0f;
+	keyPick = false;
 }
 
 Maze::~Maze()
@@ -47,28 +48,33 @@ void Maze::mazeInit(std::string _mazeFile, glm::vec2 _windowSize)
 	}
 }
 
-void Maze::draw(ShaderProgram *shader, VertexArray *cube, Texture *wallTexture)
+void Maze::draw(ShaderProgram *shader, VertexArray *cube, Texture *wallTexture, 
+	VertexArray *ladder, Texture *ladderTexture,
+	VertexArray *key, Texture *keyTexture,
+	VertexArray *sign, Texture *signTexture)
 {
 	for (int r = 0; r < size; r++)
 	{
 		for (int c = 0; c < size; c++)
 		{
 			//Drawing floor & ceiling
-			if (maze[r][c].space == 0)
+			if (maze[r][c].space == 0 || maze[r][c].space == 2 
+				|| maze[r][c].space == 3 || maze[r][c].space == 4)
 			{
 				glm::vec3 temp = maze[r][c].pos;
-				temp.y -= 0.5f;
+				temp.y = -11.0f;
 				glm::mat4 model(1.0f);
 				model = glm::translate(model, temp);
-				model = glm::scale(model, glm::vec3(0.05f, 0.01f, 0.05f));
+				model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 				shader->setUniform("in_Model", model);
 				shader->setUniform("in_Texture", wallTexture);
+
 				shader->draw(cube);
 
-				temp.y += 13.5f;
+				temp.y = +9.5f;
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, temp);
-				model = glm::scale(model, glm::vec3(0.05f, 0.01f, 0.05f));
+				model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 				shader->setUniform("in_Model", model);
 				shader->setUniform("in_Texture", wallTexture);
 				shader->draw(cube);
@@ -85,13 +91,49 @@ void Maze::draw(ShaderProgram *shader, VertexArray *cube, Texture *wallTexture)
 				shader->setUniform("in_Texture", wallTexture);
 				shader->draw(cube);
 			}
+
+			if (maze[r][c].space == 3)
+			{
+
+				glm::mat4 model(1.0f);
+				model = glm::translate(model, maze[r][c].pos);
+				model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));				
+				shader->setUniform("in_Model", model);
+				if (keyPick == true)
+				{
+					shader->setUniform("in_Texture", ladderTexture);
+					shader->draw(ladder);
+				}
+				else
+				{
+					shader->setUniform("in_Texture", signTexture);
+					shader->draw(sign);
+				}
+			}
+			if (maze[r][c].space == 4)
+			{
+				if (keyPick == false)
+				{
+					glm::mat4 model(1.0f);
+					glm::vec3 temp = maze[r][c].pos;
+					temp.y += 6.0f;
+					model = glm::translate(model, temp);
+					model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+					model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0, 1));
+					model = glm::rotate(model, glm::radians(angle), glm::vec3(1, 0, 0));
+					shader->setUniform("in_Model", model);
+					shader->setUniform("in_Texture", keyTexture);
+					shader->draw(key);
+
+					angle++;
+				}
+			}
 		}
 	}
 }
 
 bool Maze::collisionCheck(glm::vec3 _pos)
 {
-	//TO BE FIXED
 	float x = ((_pos.x - 3.3f) / dimensions);
 	float z = ((_pos.z - 3.3f) / dimensions);
 	x = ceil(x);
@@ -100,34 +142,34 @@ bool Maze::collisionCheck(glm::vec3 _pos)
 	int dx[4] = { x, x + 1, x, x - 1 };
 	int dz[4] = { z - 1, z, z + 1, z };
 
-	float left, right, top, bottom;
-
 	for (int i = 0; i < 4; i++)
 	{
 		if (maze[dx[i]][dz[i]].space == 1)
 		{
-
+			//2D AABB collision
+			// add "&& (_pos.y >= maze[dx[i]][dz[i]].cubeMin.y && _pos.y <= maze[dx[i]][dz[i]].cubeMax.y)"
+			// in if statement to make it into 3D
+			// (not needed cause there is no Y movement in the game)
 			if ((_pos.x >= maze[dx[i]][dz[i]].cubeMin.x && _pos.x <= maze[dx[i]][dz[i]].cubeMax.x)
 				&& (_pos.z >= maze[dx[i]][dz[i]].cubeMin.z && _pos.z <= maze[dx[i]][dz[i]].cubeMax.z))
 			{
 				return true;
 			}
 		}
+		if (maze[dx[i]][dz[i]].space == 4)
+		{
+			keyPick = true;
+		}
 	}
 	return false;
+}
+
+bool Maze::getKeyPick()
+{
+	return true;
 }
 
 glm::vec3 Maze::getStartPosition()
 {
 	return startPos;
-}
-
-int Maze::getSpaceStatus(int _rows, int _columns)
-{
-	return maze[_rows][_columns].space;
-}
-
-glm::vec3 Maze::getSpacePosition(int _rows, int _columns)
-{
-	return maze[_rows][_columns].pos;
 }
