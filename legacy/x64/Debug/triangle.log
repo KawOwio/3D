@@ -1,9 +1,0 @@
-﻿  main.cpp
-c:\visualstudioprojects\3d\legacy\main.cpp(1): fatal error C1083: Cannot open include file: 'SDL2/SDL.h': No such file or directory
-  ShaderProgram.cpp
-c:\visualstudioprojects\3d\legacy\shaderprogram.h(3): fatal error C1083: Cannot open include file: 'GL/glew.h': No such file or directory
-  VertexArray.cpp
-c:\visualstudioprojects\3d\legacy\vertexarray.h(3): fatal error C1083: Cannot open include file: 'GL/glew.h': No such file or directory
-  VertexBuffer.cpp
-c:\visualstudioprojects\3d\legacy\vertexbuffer.h(3): fatal error C1083: Cannot open include file: 'glm/glm.hpp': No such file or directory
-  Generating Code...

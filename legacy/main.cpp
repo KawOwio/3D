@@ -1,3 +1,8 @@
+//**********************************************************//
+//						3D OpenGL Game						//
+//			Created by Nikita Gribuska (s5065617)			//
+//			GitHub link: https://github.com/s5065617/3D		//
+//**********************************************************//
 #include "VertexBuffer.h"
 #include "Maze.h"
 #include "Player.h"
@@ -138,9 +143,14 @@ int main(int argc, char *argv[])
 	lastTime = time;
 	system("cls");
 
-	bool exit = mazeInit.getKeyPick();
+	bool exit = mazeInit.getExit();
 	if (exit == true)
 	{
+		SDL_DestroyWindow(window);
+		
+		system("cls");
+		std::cout << "Congratulations! You won!\n\n\n";
+		SDL_Quit();
 		break;
 	}
 
@@ -153,5 +163,6 @@ int main(int argc, char *argv[])
 
   SDL_DestroyWindow(window);
   SDL_Quit();
+  system("pause");
   return 0;
 }

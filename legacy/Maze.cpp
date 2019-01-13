@@ -4,6 +4,7 @@ Maze::Maze()
 {
 	angle = 0.0f;
 	keyPick = false;
+	exitStatus = false;
 }
 
 Maze::~Maze()
@@ -160,13 +161,17 @@ bool Maze::collisionCheck(glm::vec3 _pos)
 		{
 			keyPick = true;
 		}
+		if (maze[dx[i]][dz[i]].space == 3 && keyPick == true)
+		{
+			exitStatus = true;
+		}
 	}
 	return false;
 }
 
-bool Maze::getKeyPick()
+bool Maze::getExit()
 {
-	return true;
+	return exitStatus;
 }
 
 glm::vec3 Maze::getStartPosition()

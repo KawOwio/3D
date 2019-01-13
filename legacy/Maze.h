@@ -38,6 +38,7 @@ private:
 	Grid maze[21][21];
 
 	bool keyPick;
+	bool exitStatus;
 
 public:
 	Maze();
@@ -49,6 +50,6 @@ public:
 		VertexArray *key, Texture *keyTexture,
 		VertexArray *sign, Texture *signTexture);
 	bool collisionCheck(glm::vec3 _pos);
-	bool getKeyPick();
+	bool getExit();
 	glm::vec3 getStartPosition();
 };
