@@ -92,7 +92,9 @@ void Maze::draw(ShaderProgram *shader, VertexArray *cube, Texture *wallTexture,
 				shader->setUniform("in_Texture", wallTexture);
 				shader->draw(cube);
 			}
-
+			//Drawing finish
+			//A sign if the player doesn't have a key
+			//A ladder if the player has a key
 			if (maze[r][c].space == 3)
 			{
 
@@ -111,6 +113,7 @@ void Maze::draw(ShaderProgram *shader, VertexArray *cube, Texture *wallTexture,
 					shader->draw(sign);
 				}
 			}
+			//Drawing a key
 			if (maze[r][c].space == 4)
 			{
 				if (keyPick == false)
@@ -140,6 +143,7 @@ bool Maze::collisionCheck(glm::vec3 _pos)
 	x = ceil(x);
 	z = ceil(z);
 
+	//4 directions from the player
 	int dx[4] = { x, x + 1, x, x - 1 };
 	int dz[4] = { z - 1, z, z + 1, z };
 

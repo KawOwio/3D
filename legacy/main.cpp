@@ -51,30 +51,23 @@ int main(int argc, char *argv[])
 
   ShaderProgram *shader = new ShaderProgram("../assets/shaders/simple.vert", "../assets/shaders/simple.frag");
 
-  Maze mazeInit;
+  Maze maze;
   Player myPlayer;
 
-  //Initialisation of the maze
-  mazeInit.mazeInit("../assets/mazes/maze.txt", glm::vec2(800, 600));
+  //Initialisation of the maze (change "21x21" to "maze" for a good debugging maze)
+  maze.mazeInit("../assets/mazes/21x21.txt", glm::vec2(800, 600));
 
   //Getting and setting the start position
-  glm::vec3 start = mazeInit.getStartPosition();
+  glm::vec3 start = maze.getStartPosition();
   start.y = 4.0f;
   myPlayer.setPosition(start);
 
   bool quit = false;
   bool collision = false;
 
-  glm::vec2 angle = glm::vec2(0.0f, 0.0f);
-  float speed = playerSpeed;
   float lastTime = SDL_GetTicks();
   
   glm::vec3 cameraPos = myPlayer.getPosition();
-  glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-  glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-  glm::vec2 cameraRotation;
-;
   glm::vec3 fwd = glm::vec3(0.0f, 0.0f, -1.0f);
   glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
 
@@ -85,8 +78,6 @@ int main(int argc, char *argv[])
   glEnable(GL_DEPTH_TEST);
   SDL_SetRelativeMouseMode(SDL_TRUE);
 
-
-
   while(!quit)
   {
 	frameStartMs = SDL_GetTicks();
@@ -94,15 +85,16 @@ int main(int argc, char *argv[])
 
     while(SDL_PollEvent(&event))
     {
+		//Doesn't work for some reason?
+		//works if "SDL_QUIT" changed to another event f.e. "SDL_MOUSBEBUTTONDOWN"
       if(event.type == SDL_QUIT)
       {
         quit = true;
+		break;
       }
-	  myPlayer.keyboardInput(event, speed, fwd, cameraUp);
+	  myPlayer.keyboardInput(event, playerSpeed, fwd);
     }
 	myPlayer.mouseInput(event);
-
-	collision = true;
 
     SDL_GetWindowSize(window, &windowWidth, &windowHeight);
     glViewport(0, 0, windowWidth, windowHeight);
@@ -131,9 +123,9 @@ int main(int argc, char *argv[])
     shader->setUniform("in_View", glm::inverse(model));
 
 	//Draw the maze	
-	mazeInit.draw(shader, cube, cubeTexture, ladder, ladderTexture, key, keyTexture, sign, signTexture);
+	maze.draw(shader, cube, cubeTexture, ladder, ladderTexture, key, keyTexture, sign, signTexture);
 	
-	collision = mazeInit.collisionCheck(myPlayer.getPosition());
+	collision = maze.collisionCheck(myPlayer.getPosition());
 	myPlayer.move(fwd, right, collision);
     SDL_GL_SwapWindow(window);
 
@@ -143,7 +135,7 @@ int main(int argc, char *argv[])
 	lastTime = time;
 	system("cls");
 
-	bool exit = mazeInit.getExit();
+	bool exit = maze.getExit();
 	if (exit == true)
 	{
 		SDL_DestroyWindow(window);

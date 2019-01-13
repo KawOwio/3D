@@ -2,7 +2,6 @@
 
 Player::Player()
 {
-	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	pitch = 40.0f;
 	bool w = false;
 	bool a = false;
@@ -15,7 +14,7 @@ Player::~Player()
 
 }
 
-bool Player::keyboardInput(SDL_Event event, float speed, glm::vec3 front, glm::vec3 up)
+bool Player::keyboardInput(SDL_Event event, float speed, glm::vec3 front)
 {
 
 	if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
@@ -39,22 +38,6 @@ bool Player::keyboardInput(SDL_Event event, float speed, glm::vec3 front, glm::v
 		}
 	}
 	return false;
-}
-
-void Player::UpdateView(glm::vec3 fwd)
-{
-	glm::mat4 matPitch = glm::mat4(1.0f);
-	glm::mat4 matYaw = glm::mat4(1.0f);
-
-	matPitch = glm::rotate(matPitch, pitch, glm::vec3(1.0f, 0.0f, 0.0f));
-	matYaw = glm::rotate(matYaw, yaw, glm::vec3(1.0f, 0.0f, 0.0f));
-
-	glm::mat4 rotate = matPitch * matYaw;
-
-	glm::mat4 translate = glm::mat4(1.0f);
-	translate = glm::translate(translate, -fwd);
-
-	viewMatrix = rotate * translate;
 }
 
 void Player::mouseInput(SDL_Event event)
@@ -126,11 +109,6 @@ void Player::move(glm::vec3 fwd, glm::vec3 right, bool collision)
 glm::vec3 Player::getPosition()
 {
 	return position;
-}
-
-glm::mat4 Player::getViewMatrix()
-{
-	return viewMatrix;
 }
 
 float Player::getYaw()
